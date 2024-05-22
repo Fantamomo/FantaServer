@@ -41,8 +41,7 @@ public class FantaServer implements Server {
         pluginManager = new FantaPluginManager(this);
         eventManager = new FantaEventManager(this);
         commandManager = new FantaCommandManager();
-        serverSocket = new ServerSocket(29001);
-        System.out.println("Secure server is listening on port 12345");
+        serverSocket = new ServerSocket(PORT);
         threadPool = Executors.newCachedThreadPool();
     }
 
@@ -83,11 +82,14 @@ public class FantaServer implements Server {
         try {
             Handler handler;
             ClientTypePacket clientTypePacket;
-
+            logger.info("1");
             ObjectOutputStream output = new ObjectOutputStream(clientSocket.getOutputStream());
+            logger.info("2");
             ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream());
+            logger.info("3");
             Packet typePacket = (Packet) input.readObject();
 
+            logger.info("4");
             if (typePacket.packetType() == PacketType.CLIENT_TYPE) {
                 clientTypePacket = (ClientTypePacket) typePacket.objects()[0];
                 handler = pluginManager.getPluginHandler(clientTypePacket.getObject());
