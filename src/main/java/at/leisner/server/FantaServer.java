@@ -1,5 +1,6 @@
 package at.leisner.server;
 
+import at.leisner.packet.ClientTypePacket;
 import at.leisner.server.client.FantaClient;
 import at.leisner.server.command.FantaCommandManager;
 import at.leisner.server.command.commands.ExampleCommand;
@@ -9,12 +10,15 @@ import at.leisner.server.event.client.ClientConnectEvent;
 import at.leisner.server.handler.ClientHandler;
 import at.leisner.server.handler.Handler;
 import at.leisner.server.logging.LoggerSetup;
-import at.leisner.server.packet.Packet;
-import at.leisner.server.packet.PacketType;
+import at.leisner.packet.Packet;
+import at.leisner.packet.PacketType;
 import at.leisner.server.plugin.FantaPluginManager;
 import at.leisner.server.plugin.JavaPlugin;
 import at.leisner.server.util.Util;
 
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -28,7 +32,7 @@ public class FantaServer implements Server {
     private static final int PORT = 29001;
     private final FantaPluginManager pluginManager;
     private final FantaEventManager eventManager;
-    private final ServerSocket serverSocket;
+    private final SSLServerSocket sslServerSocket;
     private final ExecutorService threadPool;
     private final FantaCommandManager commandManager;
     private static FantaServer instance;
@@ -40,7 +44,9 @@ public class FantaServer implements Server {
         pluginManager = new FantaPluginManager(this);
         eventManager = new FantaEventManager(this);
         commandManager = new FantaCommandManager();
-        serverSocket = new ServerSocket(PORT);
+        SSLServerSocketFactory sslServerSocketFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+        sslServerSocket = (SSLServerSocket) sslServerSocketFactory.createServerSocket(29001);
+        System.out.println("Secure server is listening on port 12345");
         threadPool = Executors.newCachedThreadPool();
     }
 
@@ -59,7 +65,7 @@ public class FantaServer implements Server {
     private void acceptClients() {
         while (true) {
             try {
-                Socket clientSocket = serverSocket.accept();
+                SSLSocket clientSocket = (SSLSocket) sslServerSocket.accept();
                 threadPool.submit(() -> handleClient(clientSocket));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -77,15 +83,18 @@ public class FantaServer implements Server {
         pluginManager.initializePlugins();
     }
 
-    private void handleClient(Socket clientSocket) {
+    private void handleClient(SSLSocket clientSocket) {
         try {
+            Handler handler;
+            ClientTypePacket clientTypePacket;
+
             ObjectOutputStream output = new ObjectOutputStream(clientSocket.getOutputStream());
             ObjectInputStream input = new ObjectInputStream(clientSocket.getInputStream());
             Packet typePacket = (Packet) input.readObject();
-            Handler handler;
 
-            if (typePacket.getPacketType() == PacketType.CLIENT_TYPE) {
-                handler = pluginManager.getPluginHandler((String) typePacket.getObjects()[0]);
+            if (typePacket.packetType() == PacketType.CLIENT_TYPE) {
+                clientTypePacket = (ClientTypePacket) typePacket.objects()[0];
+                handler = pluginManager.getPluginHandler(clientTypePacket.getObject());
             } else {
                 return;
             }
@@ -93,7 +102,7 @@ public class FantaServer implements Server {
             ClientHandler clientHandler = handler.getClientHandler();
             if (clientHandler != null || !handler.isEnable()) {
                 FantaClient client = new FantaClient(clientSocket, output);
-                ClientConnectEvent clientConnectEvent = new ClientConnectEvent(client, ((String) typePacket.getObjects()[0]),pluginManager.getPluginByType((String) typePacket.getObjects()[0]));
+                ClientConnectEvent clientConnectEvent = new ClientConnectEvent(client, clientTypePacket.getObject(),pluginManager.getPluginByType(clientTypePacket.getObject()));
                 eventManager.callEvent(clientConnectEvent);
                 while (handler.isEnable() && !clientConnectEvent.isCancelled()) {
                     Packet packet = (Packet) input.readObject();
@@ -126,7 +135,7 @@ public class FantaServer implements Server {
 
     @Override
     public JavaPlugin getPlugin(String id) {
-        return null;
+        return pluginManager.getPlugin(id);
     }
 
     public static Server getInstance() {
