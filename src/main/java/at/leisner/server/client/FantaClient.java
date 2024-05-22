@@ -2,18 +2,18 @@ package at.leisner.server.client;
 
 import at.leisner.packet.Packet;
 
-import javax.net.ssl.SSLSocket;
 import java.io.*;
+import java.net.Socket;
 
 public class FantaClient implements Client {
-    private final SSLSocket socket;
+    private final Socket socket;
     private final ObjectOutputStream output;
 
-    public FantaClient(SSLSocket socket) throws IOException {
+    public FantaClient(Socket socket) throws IOException {
         this.socket = socket;
         this.output = new ObjectOutputStream(socket.getOutputStream());
     }
-    public FantaClient(SSLSocket socket, ObjectOutputStream output) {
+    public FantaClient(Socket socket, ObjectOutputStream output) {
         this.socket = socket;
         this.output = output;
     }

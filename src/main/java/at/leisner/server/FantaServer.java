@@ -16,9 +16,6 @@ import at.leisner.server.plugin.FantaPluginManager;
 import at.leisner.server.plugin.JavaPlugin;
 import at.leisner.server.util.Util;
 
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.SSLSocket;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -32,7 +29,7 @@ public class FantaServer implements Server {
     private static final int PORT = 29001;
     private final FantaPluginManager pluginManager;
     private final FantaEventManager eventManager;
-    private final SSLServerSocket sslServerSocket;
+    private final ServerSocket serverSocket;
     private final ExecutorService threadPool;
     private final FantaCommandManager commandManager;
     private static FantaServer instance;
@@ -44,8 +41,7 @@ public class FantaServer implements Server {
         pluginManager = new FantaPluginManager(this);
         eventManager = new FantaEventManager(this);
         commandManager = new FantaCommandManager();
-        SSLServerSocketFactory sslServerSocketFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
-        sslServerSocket = (SSLServerSocket) sslServerSocketFactory.createServerSocket(29001);
+        serverSocket = new ServerSocket(29001);
         System.out.println("Secure server is listening on port 12345");
         threadPool = Executors.newCachedThreadPool();
     }
@@ -65,7 +61,7 @@ public class FantaServer implements Server {
     private void acceptClients() {
         while (true) {
             try {
-                SSLSocket clientSocket = (SSLSocket) sslServerSocket.accept();
+                Socket clientSocket = serverSocket.accept();
                 threadPool.submit(() -> handleClient(clientSocket));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -83,7 +79,7 @@ public class FantaServer implements Server {
         pluginManager.initializePlugins();
     }
 
-    private void handleClient(SSLSocket clientSocket) {
+    private void handleClient(Socket clientSocket) {
         try {
             Handler handler;
             ClientTypePacket clientTypePacket;
