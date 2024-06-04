@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>at.leisner</groupId>
     <artifactId>Server</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <build>
@@ -56,7 +56,13 @@
         <dependency>
             <groupId>at.leisner</groupId>
             <artifactId>Server-API</artifactId>
-            <version>1.0-Snapshot</version>
+            <version>1.5.2-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>3.26.1</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
