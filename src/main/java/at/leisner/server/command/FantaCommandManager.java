@@ -22,8 +22,6 @@ public class FantaCommandManager implements CommandManager {
     }
 
     @Override
-    public void registerCommand(Command command) {
-
     public void registerCommand(JavaPlugin javaPlugin, String label, Command command) {
         if (javaPlugin == null || command == null) return;
         commands.add(new CommandInfo(command, javaPlugin));
