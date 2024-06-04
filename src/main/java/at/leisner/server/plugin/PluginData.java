@@ -13,6 +13,8 @@ public class PluginData {
     private final String[] types;
     private boolean state = false;
     private final Map<String, Handler> clientHandlerMap = new HashMap<>();
+    private boolean shouldLoad = true;
+    private boolean trust = false;
 
     public PluginData(String id, JavaPlugin javaPlugin, Plugin plugin, String[] types) {
         this.id = id;
@@ -51,5 +53,21 @@ public class PluginData {
 
     public Map<String, Handler> getClientHandlerMap() {
         return clientHandlerMap;
+    }
+
+    public boolean isShouldLoad() {
+        return shouldLoad;
+    }
+
+    public void setShouldLoad(boolean shouldLoad) {
+        this.shouldLoad = shouldLoad;
+    }
+
+    public boolean isTrust() {
+        return trust;
+    }
+
+    public void setTrust(boolean trust) {
+        this.trust = trust;
     }
 }
