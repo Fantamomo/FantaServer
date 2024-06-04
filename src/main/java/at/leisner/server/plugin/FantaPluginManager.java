@@ -1,7 +1,9 @@
 package at.leisner.server.plugin;
 
 import at.leisner.server.FantaServer;
+import at.leisner.server.client.Client;
 import at.leisner.server.event.plugin.PluginRegisterHandlerEvent;
+import at.leisner.server.file.FantaFileManager;
 import at.leisner.server.handler.FantaHandler;
 import at.leisner.server.handler.Handler;
 import at.leisner.server.logging.LoggerSetup;
@@ -20,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
+import java.lang.annotation.Annotation;
 public class FantaPluginManager implements PluginManager {
     private Map<String, PluginData> plugins = new HashMap<>();
     private Map<String, Handler> handlers = new HashMap<>();
@@ -30,7 +32,6 @@ public class FantaPluginManager implements PluginManager {
         this.server = server;
     }
 
-    @Override
     public void loadPlugin(File file) {
         try (JarFile jar = new JarFile(file)) {
             Enumeration<JarEntry> entries = jar.entries();
@@ -42,12 +43,21 @@ public class FantaPluginManager implements PluginManager {
                     String className = entry.getName().replace('/', '.').replace(".class", "");
                     Class<?> clazz = loader.loadClass(className);
                     if (clazz.isAnnotationPresent(Plugin.class)) {
-                        JavaPlugin plugin = (JavaPlugin) clazz.getDeclaredConstructor().newInstance();
+                        Object objectJavaPlugin = clazz.getDeclaredConstructor().newInstance();
                         Plugin annotation = clazz.getAnnotation(Plugin.class);
-                        plugins.put(annotation.id(), new PluginData(annotation.id(), plugin, annotation, annotation.types()));
-                        Util.updatePrivateVariable(plugin,"fantaServerServer", FantaServer.getInstance());
-                        Util.updatePrivateVariable(plugin, "fantaServerLogger", LoggerSetup.createLogger(annotation.name()));
-                        server.getEventManager().registerEvents(plugin);
+                        if (objectJavaPlugin instanceof JavaPlugin plugin) {
+                            plugins.put(annotation.id(), new PluginData(annotation.id(), plugin, annotation, annotation.types()));
+                            Util.updatePrivateVariable(plugin, "fantaServerServer", FantaServer.getInstance());
+                            Util.updatePrivateVariable(plugin, "fantaServerLogger", LoggerSetup.createLogger(annotation.name()));
+                            Util.updatePrivateVariable(plugin, "fantaServerFileManager", new FantaFileManager(new File(file.getParentFile(), annotation.name()), plugin));
+                            Util.updatePrivateVariable(plugin, "fantaServerClassLoader", (ClassLoader) loader);
+                            server.getEventManager().registerEvents(plugin);
+                        } else {
+                            server.getLanguage().formatAndPrint("plugins.wrong_plugin_class", server.getLogger()::warning, file.getName(), clazz);
+//                            server.getLogger().warning("In Plugin \""+file.getName()+
+//                                    "\" exist a class <"+clazz+
+//                                    "> witch has die @Plugin annotation, but not extend from \"at.leisner.plugin.JavaPlugin\". Please contact the autor of this Plugin. (Plugin will not load!)");
+                        }
                     }
                 }
             }
@@ -107,7 +117,7 @@ public class FantaPluginManager implements PluginManager {
     }
 
     @Override
-    public boolean pluginExist(String id) throws PluginNotExistException {
+    public boolean pluginExist(String id){
         return plugins.containsKey(id);
     }
 
@@ -168,7 +178,20 @@ public class FantaPluginManager implements PluginManager {
     }
 
     public void initializePlugins() {
+        for (String pluginId : plugins.keySet()) {
+            PluginData pluginData = plugins.get(pluginId);
+            Plugin plugin = pluginData.getPlugin();
+            for (Dependency dependency : plugin.dependencies()) {
+                if (!pluginExist(dependency.id()) && dependency.required()) {
+                    server.getLanguage().formatAndPrint("plugins.dependency", server.getLogger()::warning, plugin.name(), pluginId, dependency.id());
+//                    server.getLogger().warning("Plugin \"" + plugin.name() + "\"(" + pluginId + ") need the Plugin \"" + dependency.id() +
+//                            "\" to be installed. Installed it or if you think this is an error pleas contact us or the Plugin autor!");
+                    pluginData.setShouldLoad(false);
+                }
+            }
+        }
         for (PluginData pluginData : plugins.values()) {
+            if (!pluginData.isShouldLoad()) continue;
             JavaPlugin plugin = pluginData.getJavaPlugin();
             getPluginData(plugin).setEnable(true);
             plugin.onLoad();
@@ -189,4 +212,12 @@ public class FantaPluginManager implements PluginManager {
         return null;
     }
 
+    public void disableAllPlugins() {
+        for (PluginData plugin : plugins.values()) {
+            plugin.getJavaPlugin().onDisable();
+        }
+    }
+    public boolean trust(JavaPlugin javaPlugin) {
+        return getPluginData(javaPlugin).isTrust();
+    }
 }
