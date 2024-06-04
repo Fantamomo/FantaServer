@@ -8,12 +8,12 @@ import java.lang.reflect.Field;
 import java.util.logging.Level;
 
 public class Util {
-    public static void updatePrivateVariable(JavaPlugin plugin,String name, Object object) {
+    public static void updatePrivateVariable(Object instance,String name, Object object) {
         // Verwenden Sie Reflektion, um auf die private Variable 'server' zuzugreifen und sie zu setzen
         try {
             Field serverField = JavaPlugin.class.getDeclaredField(name);
             serverField.setAccessible(true);
-            serverField.set(plugin, object);
+            serverField.set(instance, object);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             LoggerSetup.getMainLogger().log(Level.SEVERE,"",e);
         }
