@@ -23,7 +23,7 @@ public class Console {
                 String commandName = args[0];
                 Command command = commandManager.getCommand(commandName);
                 if (command != null) {
-                    command.execute(args.length > 1 ? args : new String[0]);
+                    command.execute(commandName, args.length > 1 ? args : new String[0]);
                 } else {
                     System.out.println("Unknown command: " + commandName);
                 }
@@ -41,7 +41,7 @@ public class Console {
             // Call tabComplete on the command if available
             Command command = commandManager.getCommand(args[0]);
             if (command != null) {
-                return command.tabComplete(args);
+                return command.tabComplete(args[0], args);
             }
         }
         return null;
