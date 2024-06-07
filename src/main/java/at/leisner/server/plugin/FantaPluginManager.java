@@ -1,5 +1,7 @@
 package at.leisner.server.plugin;
 
+import at.leisner.packet.Packet;
+import at.leisner.packet.PacketHandler;
 import at.leisner.server.FantaServer;
 import at.leisner.server.client.Client;
 import at.leisner.server.event.plugin.PluginRegisterHandlerEvent;
@@ -25,7 +27,7 @@ import java.util.jar.JarFile;
 import java.lang.annotation.Annotation;
 public class FantaPluginManager implements PluginManager {
     private Map<String, PluginData> plugins = new HashMap<>();
-    private Map<String, Handler> handlers = new HashMap<>();
+    private Map<String, FantaHandler> handlers = new HashMap<>();
     private final FantaServer server;
 
     public FantaPluginManager(FantaServer server) {
@@ -122,34 +124,6 @@ public class FantaPluginManager implements PluginManager {
     }
 
     @Override
-    public void registerClientHandler(JavaPlugin javaPlugin, String type, ClientHandler clientHandler) {
-//        if (!getPluginData(javaPlugin).isEnable()) return;
-//        if (!Arrays.asList(getPluginData(javaPlugin).getTypes()).contains(type)) return;
-//        handlers.put(type,clientHandler);
-//        getPluginHandlerForPlugin(javaPlugin).put(type,clientHandler);
-    }
-
-    @Override
-    public void unregisterClientHandler(JavaPlugin javaPlugin, String type) {
-        if (getPluginHandlerForPlugin(javaPlugin).containsKey(type)) {
-            getPluginHandlerForPlugin(javaPlugin).remove(type);
-            handlers.remove(type);
-        }
-    }
-
-    @Override
-    @Deprecated
-    public void unregisterClientHandler(JavaPlugin javaPlugin, ClientHandler clientHandler) {
-    }
-
-    @Override
-    public void unregisterAllClientHandlers(JavaPlugin javaPlugin) {
-        for (String type : handlers.keySet()) {
-            unregisterClientHandler(javaPlugin,type);
-        }
-    }
-
-    @Override
     public Handler getHandler(JavaPlugin javaPlugin, String type) {
         if (!getPluginData(javaPlugin).isEnable()) return null;
         if (!Arrays.asList(getPluginData(javaPlugin).getTypes()).contains(type)) return null;
@@ -199,8 +173,8 @@ public class FantaPluginManager implements PluginManager {
         }
     }
 
-    public ClientHandler getPluginClientHandler(String type) {
-        return handlers.get(type).getClientHandler();
+    public Map<Class<? extends Packet>, PacketHandler> getPluginClientHandler(String type) {
+        return handlers.get(type).getPacketHandlerMap();
     }
     public Handler getPluginHandler(String type) {
         return handlers.get(type);

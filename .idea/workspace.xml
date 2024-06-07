@@ -4,27 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="38dedce6-57c5-45b1-8d32-d22023464615" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/at/leisner/server/FantaServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/at/leisner/server/client/FantaClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/at/leisner/server/command/FantaCommandManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/at/leisner/server/command/commands/ExampleCommand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/at/leisner/server/console/Console.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/at/leisner/server/event/FantaEventManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/at/leisner/server/event/FantaRegisteredListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/at/leisner/server/handler/FantaHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/at/leisner/server/logging/LoggerSetup.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/at/leisner/server/plugin/FantaPluginManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/at/leisner/server/plugin/PluginData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/at/leisner/server/util/Util.java" afterDir="false" />
+    <list default="true" id="38dedce6-57c5-45b1-8d32-d22023464615" name="Changes" comment="Update version to 1.2-SNAPSHOT&#10;Add org.jline:jline dependency">
+      <change afterPath="$PROJECT_DIR$/plugins/PythonClientPlugin-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/at/leisner/server/plugin/FantaPluginManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/at/leisner/server/plugin/FantaPluginManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,13 +42,22 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Application.CommandSuggestionFrame.executor": "Run",
     "Application.FantaServer.executor": "Run",
+    "Application.JLineExample.executor": "Run",
+    "Application.ServerManagerGUI.executor": "Run",
+    "Application.StyledTextArea.executor": "Run",
+    "Application.SuggestionFrame.executor": "Run",
+    "Application.at.leisner.server.SuggestionFrame.executor": "Run",
+    "Maven.Server [install].executor": "Run",
     "Maven.Server [package].executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
+    "last.edited.regexp": "\\u001B[0m",
+    "last_opened_file_path": "C:/Users/morit/IdeaProjects/Server/Server/plugins",
     "onboarding.tips.debug.path": "C:/Users/morit/IdeaProjects/Server/Server/src/main/java/org/example/Main.java",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.0",
@@ -73,17 +66,61 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\morit\IdeaProjects\Server\Server\plugins" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\morit\IdeaProjects\Server\Server\plugins\_" />
       <recent name="C:\Users\morit\IdeaProjects\Server\Server\target" />
+      <recent name="C:\Users\morit\IdeaProjects\Server\Server\data" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.FantaServer">
     <configuration name="FantaServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="at.leisner.server.FantaServer" />
       <module name="Server" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="at.leisner.server.*" />
+          <option name="PATTERN" value="at.leisner.server.gui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="JLineExample" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="at.leisner.server.JLineExample" />
+      <module name="Server" />
+      <extension name="coverage" runner="jacoco">
+        <pattern>
+          <option name="PATTERN" value="at.leisner.server.gui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServerManagerGUI" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="at.leisner.server.gui.ServerManagerGUI" />
+      <module name="Server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="at.leisner.server.gui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StyledTextArea" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="at.leisner.server.gui.StyledTextArea" />
+      <module name="Server" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="at.leisner.server.gui.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -94,6 +131,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.FantaServer" />
+        <item itemvalue="Application.ServerManagerGUI" />
+        <item itemvalue="Application.StyledTextArea" />
+        <item itemvalue="Application.JLineExample" />
       </list>
     </recent_temporary>
   </component>
@@ -113,6 +153,132 @@
       <option name="presentableId" value="Default" />
       <updated>1716218630588</updated>
     </task>
+    <task id="LOCAL-00001" summary="FantaServer created">
+      <option name="closed" value="true" />
+      <created>1716355716758</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1716355716758</updated>
+    </task>
+    <task id="LOCAL-00002">
+      <option name="closed" value="true" />
+      <created>1717532558908</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1717532558908</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Update methode parameter and bodys">
+      <option name="closed" value="true" />
+      <created>1717532579585</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1717532579585</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Add methode getType and getClientMetaData">
+      <option name="closed" value="true" />
+      <created>1717532618471</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1717532618471</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Add methods and bodys">
+      <option name="closed" value="true" />
+      <created>1717532678276</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1717532678277</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Update Plugin loading system">
+      <option name="closed" value="true" />
+      <created>1717532725379</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1717532725381</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Add GuiFormatter&#10;Return a custom Logger for Language support">
+      <option name="closed" value="true" />
+      <created>1717532833263</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1717532833263</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Update Plugin Lifecycle system">
+      <option name="closed" value="true" />
+      <created>1717532877855</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1717532877855</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Make updatePrivateVariable more after OOP">
+      <option name="closed" value="true" />
+      <created>1717532948624</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1717532948624</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Remove registerCommand(Command) methode">
+      <option name="closed" value="true" />
+      <created>1717532986182</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1717532986182</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Update ClientPacketHandler system">
+      <option name="closed" value="true" />
+      <created>1717533038664</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1717533038666</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Update version to 1.2-SNAPSHOT&#10;Add org.jline:jline dependency">
+      <option name="closed" value="true" />
+      <created>1717533094674</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1717533094675</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="FantaServer created" />
+    <MESSAGE value="Update methode bodys" />
+    <MESSAGE value="Update methode parameter and bodys" />
+    <MESSAGE value="Add methode getType and getClientMetaData" />
+    <MESSAGE value="Add methods and bodys" />
+    <MESSAGE value="Update Plugin loading system" />
+    <MESSAGE value="Add GuiFormatter&#10;Return a custom Logger for Language support" />
+    <MESSAGE value="Update Plugin Lifecycle system" />
+    <MESSAGE value="Make updatePrivateVariable more after OOP" />
+    <MESSAGE value="Remove registerCommand(Command) methode" />
+    <MESSAGE value="Update ClientPacketHandler system" />
+    <MESSAGE value="Update version to 1.2-SNAPSHOT&#10;Add org.jline:jline dependency" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update version to 1.2-SNAPSHOT&#10;Add org.jline:jline dependency" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.NullPointerException" package="java.lang" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+        <breakpoint type="java-exception">
+          <properties class="java.net.SocketException" package="java.net" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

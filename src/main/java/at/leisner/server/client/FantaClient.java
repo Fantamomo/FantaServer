@@ -23,13 +23,21 @@ public class FantaClient implements Client {
     }
 
     @Override
-    public void sendPacket(Packet packet) throws IOException {
-        output.writeObject(packet);
+    public void sendPacket(Packet packet) {
+        try {
+            output.writeObject(packet);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void disconnect() throws IOException {
-        socket.close();
+    public void disconnect() {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

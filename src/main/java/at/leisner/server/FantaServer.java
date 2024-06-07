@@ -1,6 +1,6 @@
 package at.leisner.server;
 
-import at.leisner.packet.ClientTypePacket;
+import at.leisner.packet.*;
 import at.leisner.server.client.FantaClient;
 import at.leisner.server.client.FantaDumpClient;
 import at.leisner.server.command.FantaCommandManager;
@@ -15,8 +15,6 @@ import at.leisner.server.handler.Handler;
 import at.leisner.server.lang.FantaLanguage;
 import at.leisner.server.logging.Logger;
 import at.leisner.server.logging.LoggerSetup;
-import at.leisner.packet.Packet;
-import at.leisner.packet.PacketType;
 import at.leisner.server.plugin.FantaPluginManager;
 import at.leisner.server.plugin.JavaPlugin;
 import at.leisner.server.stream.CustomObjectInputStream;
@@ -32,6 +30,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -149,50 +148,58 @@ public class FantaServer implements Server {
             CustomObjectInputStream input = new CustomObjectInputStream(clientSocket.getInputStream(), this.getClass().getClassLoader());
             Packet typePacket = (Packet) input.readObject();
 
-            if (typePacket.packetType() == PacketType.CLIENT_TYPE) {
-                clientTypePacket = (ClientTypePacket) typePacket.objects()[0];
-                handler = pluginManager.getPluginHandler(clientTypePacket.getObject());
+            if (typePacket instanceof ClientTypePacket clientTypePacket0) {
+                clientTypePacket = clientTypePacket0;
+                handler = pluginManager.getPluginHandler(clientTypePacket.type());
             } else {
                 return;
             }
 //            Thread.currentThread().setName(((Plugin) pluginManager.getPluginByType(clientTypePacket.getObject())).id() + "-" + clientTypePacket.getObject() + "-" + connectedClientNumberSinceStart);
 
-            ClientHandler clientHandler = handler.getClientHandler();
-            if (clientHandler != null || !handler.isEnable()) {
-                logger.lang("client.connected_successful", INFO, clientTypePacket.getObject());
-                FantaClient client = new FantaClient(clientSocket, output, clientTypePacket.getType());
-                JavaPlugin javaPlugin = pluginManager.getPluginByType(clientTypePacket.getObject());
-                ClientConnectEvent clientConnectEvent = new ClientConnectEvent(new FantaDumpClient(client), clientTypePacket.getObject(), javaPlugin);
-                input.setClassLoader(pluginManager.getPluginByType(clientTypePacket.getObject()).getClassLoader());
+            if (handler != null) {
+                logger.lang("client.connected_successful", INFO, clientTypePacket.type());
+                FantaClient client = new FantaClient(clientSocket, output, clientTypePacket.type());
+                JavaPlugin javaPlugin = pluginManager.getPluginByType(clientTypePacket.type());
+                ClientConnectEvent clientConnectEvent = new ClientConnectEvent(new FantaDumpClient(client), clientTypePacket.type(), javaPlugin);
+                input.setClassLoader(pluginManager.getPluginByType(clientTypePacket.type()).getClassLoader());
                 eventManager.callEvent(clientConnectEvent);
-                while (handler.isEnable() && !clientConnectEvent.isCancelled()) {
+                while (!clientConnectEvent.isCancelled()) {
                     try {
-                        Packet packet = (Packet) input.readObject();
-                        if (javaPlugin.getAllowedPackets() == null) {
+                        PacketPack packetPack = (PacketPack) input.readObject();
+                        Packet packet = packetPack.packet();
+                        if (packet instanceof DisconnectPacket disconnectPacket) {
+                            logger.lang("client.disconnect", INFO);
+                            return;
+                        }
+                        Class<? extends Packet> packetClass = packet.getClass();
+                        if (handler.isEnable(packetClass)) {
                             if (handler.getFilter().filter(client, packet)) {
-                                clientHandler.handle(client, packet);
-                            }
-                        } else if (Arrays.asList(javaPlugin.getAllowedPackets()).contains(packet.messagePacket())) {
-                            if (handler.getFilter().filter(client, packet)) {
-                                clientHandler.handle(client, packet);
+                                if (handler.getPacketHandler(packetClass) != null) {
+                                    handler.getPacketHandler(packetClass).handle(client, packet);
+                                } else {
+                                    logger.warning("Unsupported Message type \"" + packet.getClass() + "\".");
+                                }
                             }
                         }
+//                        } else if (Arrays.asList(javaPlugin.getAllowedPackets()).contains(packet.messagePacket())) {
+//                            if (handler.getFilter().filter(client, packet)) {
+//                                handler.getPacketHandler().handle(client, packet);
+//                            }
+//                        }
 
                     } catch (SocketException se) {
+                        if ("Connection reset".equals(se.getMessage())) {
+                            logger.lang("client.disconnect", INFO);
+                            return;
+                        } else {
+                            logger.info(se.getMessage());
+                        }
                         logger.lang("client.disconnect_error", WARNING);
                         se.printStackTrace();
                         clientSocket.close();
                         return;
                     } catch (ClassNotFoundException e) {
                         logger.lang("client.parsed_packet_error", SEVERE);
-//                        logger.severe("""
-//                                A packet receive with a class with is not in the Server-API or in the Java standard bibliothek. If you want to send custom classes in Packets please override the "getPacket(PacketInputStream packetInputStream)" methode in you Plugin and give it the following code: "
-//                                try {
-//                                    return (Packet) objectInputStream.readObject();
-//                                } catch (IOException | ClassNotFoundException e) {
-//                                    throw new RuntimeException(e);
-//                                }
-//                                and add die custom class in your Plugin""");
                     } catch (StreamCorruptedException e) {
                         logger.lang("client.wrong_packets_error", SEVERE);
                     } catch (Exception e) {
@@ -250,6 +257,13 @@ public class FantaServer implements Server {
         if (!pluginManager.trust(javaPlugin)) return null;
         return permissionManager;
     }
+
+    @Override
+    public void writeRawMessage(String s) {
+        serverManagerGUi.appendOutput(s);
+        System.out.println(s);
+    }
+
     public FantaLanguage getLanguage() {
         return language;
     }
