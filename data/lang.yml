@@ -1,0 +1,23 @@
+server:
+  started: "FantaServer started on Port %s!"
+plugins:
+  start_loading: "Loading Plugins!"
+  finish_loading: "Loading %s Plugins in %sms!"
+  wrong_plugin_class: "In Plugin \"%s\" exist a class <%s> witch has die @Plugin annotation, but not extend from \"at.leisner.plugin.JavaPlugin\". Please contact the autor of this Plugin. (Plugin will not load!)"
+  dependency: "Plugin \"%s\"(%s) need the Plugin \"%s\" to be installed. Installed it or if you think this is an error pleas contact us or the Plugin autor!"
+client:
+  connected_successful: "Client connect. Type \"%s\""
+  disconnect_error: "Client disconnect, because of an Error"
+  parsed_packet_error: "Error while Parsing Client Packet"
+  wrong_packets_error: "A client send wrong Packets. Please contact the Client or Plugin autor!"
+  disconnect: "Client disconnected"
+command:
+  stop:
+    need_confirm: "Please use \"stop confirm\""
+    help: "Stopps the server and disconnect all clients."
+    successes: "Stopping server!"
+  help:
+    command_not_exist: "The command \"%s\" does not exist!"
+    help_for_command: "Help for \"%s\": $5%s"
+    not_help: "The command \"%s\" have not help."
+    help: "Show this page for an command"
